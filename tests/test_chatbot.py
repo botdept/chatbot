@@ -1,11 +1,11 @@
 import unittest
 
-from bot.core import ChatBot
+from bot.core import ChatBotCore
 
 
 class TestChatBot(unittest.TestCase):
     def setUp(self):
-        self.chatbot = ChatBot()
+        self.chatbot = ChatBotCore()
 
     def test_command_message(self):
         """ Bot should be able to respond to certain command messages """
