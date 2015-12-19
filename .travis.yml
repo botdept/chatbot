@@ -14,8 +14,8 @@ script:
 - tox -e $(echo py$TRAVIS_PYTHON_VERSION | tr -d . | sed -e 's/pypypy/pypy/')
 
 # coveralls
-after_success:
-  - coveralls
+after_script:
+  - coveralls --verbose
 
 # notify chat
 notifications:
