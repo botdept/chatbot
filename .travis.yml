@@ -1,12 +1,20 @@
 language: python
 python:
   - "2.7"
+  - "3.0"
+  - "3.2"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "pypy"
+  - "pypy3"
 
 # install dependencies
 install: "pip install -r requirements.txt"
 
 # run tests
-script: fab test
+script:
+- tox -e $(echo py$TRAVIS_PYTHON_VERSION | tr -d . | sed -e 's/pypypy/pypy/')
 
 # coveralls
 after_success:
