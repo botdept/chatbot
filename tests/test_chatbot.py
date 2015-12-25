@@ -1,4 +1,6 @@
+from __future__ import absolute_import, print_function, unicode_literals
 import unittest
+
 import mock
 
 from bot.core import ChatBotCore
@@ -22,12 +24,25 @@ class TestChatBot(unittest.TestCase):
         command = '/command'
         self.chatbot._command = mock.Mock()
         self.chatbot._parse(None, command)
-        self.chatbot._command.assert_called_once_with(None, command[1:])
+        self.chatbot._command.assert_called_once_with(None, command[1:], '')
 
         free_text = 'message'
         self.chatbot._free_text = mock.Mock()
         self.chatbot._parse(None, free_text)
         self.chatbot._free_text.assert_called_once_with(None, free_text)
+
+    def test_command_delimiter(self):
+        false_command = '/command'
+        true_command = '#command'
+
+        cb = ChatBotCore(command_delimiter='#')
+        cb._command = mock.Mock()
+        cb._free_text = mock.Mock()
+
+        cb._parse(None, false_command)
+        cb._free_text.assert_called_once_with(None, false_command)
+        cb._parse(None, true_command)
+        cb._command.assert_called_once_with(None, true_command[1:], '')
 
     def test__parse_command_message(self):
         """ _parse_command_message should return command name and arguments for the command if required """
@@ -35,9 +50,9 @@ class TestChatBot(unittest.TestCase):
         cmd1 = '/{}'.format(command)
         cmd2 = '/{} 1'.format(command)
         cmd3 = '/{} 1   2 3'.format(command)
-        self.assertEqual((command, ()), self.chatbot._parse_command_message(cmd1))
-        self.assertEqual((command, ('1',)), self.chatbot._parse_command_message(cmd2))
-        self.assertEqual((command, ('1', '2', '3')), self.chatbot._parse_command_message(cmd3))
+        self.assertEqual((command, ''), self.chatbot._parse_command_message(cmd1))
+        self.assertEqual((command, '1'), self.chatbot._parse_command_message(cmd2))
+        self.assertEqual((command, '1 2 3'), self.chatbot._parse_command_message(cmd3))
 
     def test_command_message(self):
         """ Bot should be able to respond to certain command messages """

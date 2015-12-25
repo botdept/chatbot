@@ -3,20 +3,23 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 class ChatBotCore:
     """ ChatBotCore class is base class to inherit from to create new bots """
-    def __init__(self, name='ChatBot'):
+    def __init__(self, name='ChatBot', command_delimiter='/'):
         self.name = name
+        self.command_delimiter = command_delimiter
 
     def _parse_command_message(self, message):
+        """ Extract command name and arg string to pass to command """
         components = message.split()
-        command = components[0][1:]
-        args = tuple(cmp for cmp in components[1:] if cmp)
-        return (command, args)
+        command = components[0]
+        command = command.replace(self.command_delimiter, '', 1)
+        args_string = ' '.join(comp for comp in components[1:] if comp)
+        return (command, args_string)
 
     def _parse(self, user, message):
         """ Parse incoming message and call proper method for further actions """
-        if message.startswith('/'):
-            command, args = self._parse_command_message(message)
-            return self._command(user, command, *args)
+        if message.startswith(self.command_delimiter):
+            command, args_string = self._parse_command_message(message)
+            return self._command(user, command, args_string)
         else:
             return self._free_text(user, message)
 
