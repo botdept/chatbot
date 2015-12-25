@@ -13,6 +13,9 @@ install: "pip install -r requirements.txt"
 script:
 - tox -e $(echo py$TRAVIS_PYTHON_VERSION | tr -d . | sed -e 's/pypypy/pypy/')
 
+# run coveralls
+after_success: coveralls
+
 # notify chat
 notifications:
   webhooks:
