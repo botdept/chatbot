@@ -42,4 +42,7 @@ class ChatBotCore:
         pass
 
     def _send_message(self, user, message):
+        """ Send message to user
+        actual method for sending messages to user
+        """
         pass
